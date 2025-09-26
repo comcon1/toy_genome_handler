@@ -93,15 +93,10 @@ class Segments:
 
         for start_self, end_self in self.data.items():
             while start_others < end_self:
-                if start_others >= start_self:
-                    overlap_start = start_others
-                    overlap_end = min(end_self, end_others)
+                overlap_start = max(start_self, start_others)
+                overlap_end = min(end_self, end_others)
+                if overlap_start < overlap_end:
                     overlap_dict[overlap_start] = overlap_end
-                else:  # start_others < start_self
-                    if end_others > start_self:
-                        overlap_start = start_self
-                        overlap_end = min(end_self, end_others)
-                        overlap_dict[overlap_start] = overlap_end
                 if end_others < end_self:
                     try:
                         start_others, end_others = next(other_it)
