@@ -102,9 +102,12 @@ class Segments:
                         overlap_start = start_self
                         overlap_end = min(end_self, end_others)
                         overlap_dict[overlap_start] = overlap_end
-                try:
-                    start_others, end_others = next(other_it)
-                except StopIteration:
+                if end_others < end_self:
+                    try:
+                        start_others, end_others = next(other_it)
+                    except StopIteration:
+                        break
+                else:
                     break
 
         return Segments(overlap_dict)
