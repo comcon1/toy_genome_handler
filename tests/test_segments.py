@@ -23,11 +23,12 @@ def seg_rand_factory():
             a = b + step
             n = random.randint(1, 50)
             b = a + n
-            if a >= RANDLEN-1 or b > RANDLEN:
+            if a >= RANDLEN - 1 or b > RANDLEN:
                 break
             else:
                 dic[a] = b
         return Segments(dic)
+
     return _make
 
 
@@ -53,7 +54,7 @@ def test_segments_coverage(seg_rand_factory, _):
     for i, j in seg_rand_1.data.items():
         li += a[i:j]
     if len(li) != cov:
-        seg_rand_1.to_file('bad.s')
+        seg_rand_1.to_file("bad.s")
         assert False
 
 
@@ -68,16 +69,15 @@ def test_segments_intersection(seg_rand_factory, _):
     # naive overlap
     a = [0] * RANDLEN
     for i, j in seg_rand_1.data.items():
-        a[i:j] = [1]*(j-i)
+        a[i:j] = [1] * (j - i)
     b = [0] * RANDLEN
     for i, j in seg_rand_2.data.items():
-        b[i:j] = [1]*(j-i)
-    c = [ a[i]*b[i] for i in range(RANDLEN) ]
+        b[i:j] = [1] * (j - i)
+    c = [a[i] * b[i] for i in range(RANDLEN)]
     ans2 = sum(c)
     if ans2 != ans1:
-        seg_rand_1.to_file('bad1.s')
-        seg_rand_2.to_file('bad2.s')
-        oseg.to_file('bad_12.s')
-        rseg.to_file('bad_21.s')
-        pytest.fail(f'Not the same {ans2} / {ans1}')
-
+        seg_rand_1.to_file("bad1.s")
+        seg_rand_2.to_file("bad2.s")
+        oseg.to_file("bad_12.s")
+        rseg.to_file("bad_21.s")
+        pytest.fail(f"Not the same {ans2} / {ans1}")

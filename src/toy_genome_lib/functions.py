@@ -4,6 +4,7 @@ Functions module.
 
 import math
 
+from toy_genome_lib import TGLObject
 from toy_genome_lib.segments import Segments
 
 GENOME_DEFAULT_LENGTH = 10000000
@@ -15,7 +16,10 @@ class FunctionFileFormatError(ValueError):
     pass
 
 
-class Functions:
+class Functions(TGLObject):
+    file_suffix: str = ".f"
+    _data: list[float] = []
+
     @property
     def data(self):
         return self._data
@@ -38,6 +42,8 @@ class Functions:
         Args:
             file_path (str): Path to the functions file.
         """
+        super().from_file(file_path)
+
         data = []
         with open(file_path, "r") as f:
             for line in f:
@@ -80,4 +86,4 @@ class Functions:
         if math.fabs(sum_x2) < 1e-8 or math.fabs(sum_y2) < 1e-8:
             return math.nan  # correlation is undefined
 
-        return sum_xy / math.sqrt(sum_x2 * sum_y2)  
+        return sum_xy / math.sqrt(sum_x2 * sum_y2)

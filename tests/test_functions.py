@@ -30,6 +30,7 @@ def test_selected_by(func_rand_factory):
     # compare floats
     assert sum(ddd) == pytest.approx(sum(selected.data)), "sums do not match"
 
+
 @pytest.mark.unit
 def test_xs_yf():
     func = Functions.from_file(os.path.join(os.path.dirname(__file__), "data", "Y.f"), 7)
@@ -37,6 +38,7 @@ def test_xs_yf():
     selected = func.select_by(segs)
     mean_val = sum(selected.data) / len(selected)
     assert mean_val == pytest.approx(13.25), f"mean value {mean_val} does not match expected 13.25"
+
 
 @pytest.mark.unit
 def test_xf_yf():

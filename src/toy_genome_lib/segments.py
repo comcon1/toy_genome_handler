@@ -4,26 +4,31 @@ Segments module.
 Defines _Segments_ class for working with the list of segments and
 _SegmentFileFormatError_ exception class.
 """
+
 import os
+
+from toy_genome_lib import TGLObject
 
 
 class SegmentFileFormatError(ValueError):
     """Custom exception for segment file format errors."""
+
     pass
 
 
-class Segments:
+class Segments(TGLObject):
+    file_suffix: str = ".s"
 
-    _data = {}
+    _data: dict = {}
 
     @property
-    def data(self):
+    def data(self) -> dict:
         return self._data
 
     def coverage(self):
         sum = 0
         for b, e in self._data.items():
-            sum += (e-b)
+            sum += e - b
         return sum
 
     def __len__(self):
@@ -33,7 +38,7 @@ class Segments:
         self._data = ar
 
     def to_file(self, file_path: str):
-        with open(file_path, 'w') as f:
+        with open(file_path, "w") as f:
             for i, j in self._data.items():
                 f.write(f"{i} {j}\n")
 
@@ -47,32 +52,26 @@ class Segments:
         Args:
             file_path (str): Path to the segments file.
         """
+        super().from_file(file_path)
 
         if not os.path.isfile(file_path):
             msg = f"File not found: {file_path}"
             raise FileNotFoundError(msg)
-        # check estension is .s
-        if not file_path.endswith('.s'):
-            msg = f"File must have .s extension: {file_path}"
-            raise SegmentFileFormatError(msg)
 
         dic = {}
         last_end = -1
-        with open(file_path, 'r') as f:
+        with open(file_path, "r") as f:
             for i, line in enumerate(f):
                 parts = line.strip().split()
                 if len(parts) != 2:
-                    msg = f"Invalid line format at line {i+1}: {line.strip()}"
+                    msg = f"Invalid line format at line {i + 1}: {line.strip()}"
                     raise SegmentFileFormatError(msg)
                 try:
                     start, end = map(int, parts)
                 except ValueError:
                     raise SegmentFileFormatError from ValueError
                 if start < last_end or start >= end:
-                    msg = (
-                            "Segments must be non-overlapping and start < end."
-                            f" Error at line {i+1}: {line.strip()}"
-                    )
+                    msg = f"Segments must be non-overlapping and start < end. Error at line {i + 1}: {line.strip()}"
                     raise SegmentFileFormatError(msg)
                 dic[start] = end
         return cls(dic)
@@ -107,7 +106,8 @@ class Segments:
 
         return Segments(overlap_dict)
 
-#--------------------------------------------------------------------------------
-#12345678901234567890123456789012345678901234567890123456789012345678901234567890
+
+# ------------------------------------
+# 123456789012345678901234567890123456
 # ---    ----     --      ---------
 #  ........   ..   .. ...  .. .. ....
