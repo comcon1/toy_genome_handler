@@ -7,18 +7,19 @@ _SegmentFileFormatError_ exception class.
 
 import os
 
-from toy_genome_lib import TGLObject
+from toy_genome_lib import FileFormatError, TGLObject
 
 
-class SegmentFileFormatError(ValueError):
+class SegmentFileFormatError(FileFormatError):
     """Custom exception for segment file format errors."""
 
     pass
 
 
 class Segments(TGLObject):
-    file_suffix: str = ".s"
+    """Class representing a list of segments defined by (start, end+1) pairs of indeces in genome positions."""
 
+    file_suffix: str = ".s"
     _data: dict = {}
 
     @property
@@ -78,6 +79,10 @@ class Segments(TGLObject):
 
     def overlap(self, other):
         """Calculates the total overlap length with another Segments instance.
+
+        NOTE: I'm quite happy with the performance here, because it's O(N+M).
+              The algorithm is a bit hard to read, so it's intensively tested
+               in test_segments.py
 
         Args:
             other (Segments): Another Segments instance to compare with.

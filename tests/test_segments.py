@@ -4,6 +4,7 @@ from toy_genome_lib.segments import Segments, SegmentFileFormatError
 import os
 
 RANDLEN = 1000
+pytestmark = pytest.mark.unit
 
 
 @pytest.fixture
@@ -15,6 +16,9 @@ def seg1():
 
 @pytest.fixture
 def seg_rand_factory():
+    """Factory to create random segments. Implemented as a factory to be able to
+    create multiple different random segment sets just by repeating test."""
+
     def _make():
         b = 0
         dic = {}
@@ -32,7 +36,6 @@ def seg_rand_factory():
     return _make
 
 
-@pytest.mark.unit
 def test_read_segments(seg1):
     assert len(seg1.data) == 5
     assert seg1.data[100] == 200
@@ -42,9 +45,11 @@ def test_read_segments(seg1):
     with pytest.raises(FileNotFoundError):
         Segments.from_file("non_existing_file.s")
 
+    with pytest.raises(SegmentFileFormatError) as excinfo:
+        Segments.from_file(os.path.join(os.path.dirname(__file__), "data", "broken.s"))
 
-@pytest.mark.unit
-@pytest.mark.parametrize("_", range(20))  # repeat for 20 random segments
+
+@pytest.mark.parametrize("_", range(20))  # repeat for 20 random segment sets
 def test_segments_coverage(seg_rand_factory, _):
     seg_rand_1 = seg_rand_factory()
     cov = seg_rand_1.coverage()
@@ -58,7 +63,6 @@ def test_segments_coverage(seg_rand_factory, _):
         assert False
 
 
-@pytest.mark.unit
 @pytest.mark.parametrize("_", range(20))
 def test_segments_intersection(seg_rand_factory, _):
     seg_rand_1 = seg_rand_factory()

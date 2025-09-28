@@ -7,6 +7,8 @@ import os
 
 RANDLEN = 10000
 
+pytestmark = pytest.mark.unit
+
 
 @pytest.fixture
 def func_rand_factory():
@@ -19,7 +21,6 @@ def func_rand_factory():
     return _make
 
 
-@pytest.mark.unit
 def test_selected_by(func_rand_factory):
     func_rand_1 = func_rand_factory()
     segs = Segments({100: 200, 300: 400, 500: 600})
@@ -31,7 +32,6 @@ def test_selected_by(func_rand_factory):
     assert sum(ddd) == pytest.approx(sum(selected.data)), "sums do not match"
 
 
-@pytest.mark.unit
 def test_xs_yf():
     func = Functions.from_file(os.path.join(os.path.dirname(__file__), "data", "Y.f"), 7)
     segs = Segments.from_file(os.path.join(os.path.dirname(__file__), "data", "X.s"))
@@ -40,9 +40,14 @@ def test_xs_yf():
     assert mean_val == pytest.approx(13.25), f"mean value {mean_val} does not match expected 13.25"
 
 
-@pytest.mark.unit
 def test_xf_yf():
     func_x = Functions.from_file(os.path.join(os.path.dirname(__file__), "data", "X.f"), 7)
     func_y = Functions.from_file(os.path.join(os.path.dirname(__file__), "data", "Y.f"), 7)
     corr = func_x.correlate(func_y)
     assert corr == pytest.approx(0.9452853, rel=1e-7), f"correlation {corr} does not match expected 0.9452853"
+
+
+def test_broken_function_file():
+    with pytest.raises(FunctionFileFormatError) as excinfo:
+        Functions.from_file(os.path.join(os.path.dirname(__file__), "data", "broken.f"), 4)
+    assert "Invalid float value" in str(excinfo.value), "Exception message does not match expected"

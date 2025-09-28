@@ -1,3 +1,8 @@
+import os
+
+GENOME_DEFAULT_LENGTH = int(os.environ.get("TGL_GENOME_LENGTH", 10000000))
+
+
 class TGLObject:
     """Base class for Toy Genome Library objects."""
 

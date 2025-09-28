@@ -1,2 +1,2 @@
-# Elixir test problem
+# Toy-genome test problem
 
