@@ -13,7 +13,7 @@ def main():
         print("Usage: main.py <file1> <file2>")
         sys.exit(1)
     files = _cparams
-    objs = [None, None]
+    objs: list = [None, None]
     for i in [0, 1]:
         try:
             objs[i] = create_tgl_object(files[i])

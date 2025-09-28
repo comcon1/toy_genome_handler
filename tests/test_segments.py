@@ -1,7 +1,10 @@
-import pytest
-import random
-from toy_genome_lib.segments import Segments, SegmentFileFormatError
 import os
+import random
+
+import pytest
+
+from toy_genome_lib import FileFormatError
+from toy_genome_lib.segments import SegmentFileFormatError, Segments
 
 RANDLEN = 1000
 pytestmark = pytest.mark.unit
@@ -85,3 +88,12 @@ def test_segments_intersection(seg_rand_factory, _):
         oseg.to_file("bad_12.s")
         rseg.to_file("bad_21.s")
         pytest.fail(f"Not the same {ans2} / {ans1}")
+
+
+def test_broken_segments_file():
+    with pytest.raises(SegmentFileFormatError) as excinfo:
+        Segments.from_file(os.path.join(os.path.dirname(__file__), "data", "broken.s"))
+    assert "Invalid" in str(excinfo.value), "Exception message does not match expected"
+    with pytest.raises(FileFormatError) as excinfo:
+        Segments.from_file("nonexist.f")
+    assert "File must have" in str(excinfo.value), "Exception message does not match expected"

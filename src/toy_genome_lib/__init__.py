@@ -14,8 +14,7 @@ class TGLObject:
             msg = f"File must have {cls.file_suffix} extension: {file_path}"
             raise FileFormatError(msg)
 
-    @classmethod
-    def to_file(cls, file_path: str):
+    def to_file(self, file_path: str):
         raise NotImplementedError("Subclasses must implement to_file method")
 
     @property

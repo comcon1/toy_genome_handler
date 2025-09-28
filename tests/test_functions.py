@@ -1,9 +1,12 @@
-from copy import copy
-import pytest
-import random
-from toy_genome_lib.segments import Segments, SegmentFileFormatError
-from toy_genome_lib.functions import Functions, FunctionFileFormatError
 import os
+import random
+from copy import copy
+
+import pytest
+
+from toy_genome_lib import FileFormatError
+from toy_genome_lib.functions import FunctionFileFormatError, Functions
+from toy_genome_lib.segments import SegmentFileFormatError, Segments
 
 RANDLEN = 10000
 
@@ -51,3 +54,12 @@ def test_broken_function_file():
     with pytest.raises(FunctionFileFormatError) as excinfo:
         Functions.from_file(os.path.join(os.path.dirname(__file__), "data", "broken.f"), 4)
     assert "Invalid float value" in str(excinfo.value), "Exception message does not match expected"
+    with pytest.raises(FileFormatError) as excinfo:
+        Functions.from_file("nonexist.s", 4)
+    assert "File must have" in str(excinfo.value), "Exception message does not match expected"
+
+
+def test_broken_segments_file():
+    with pytest.raises(SegmentFileFormatError) as excinfo:
+        Segments.from_file(os.path.join(os.path.dirname(__file__), "data", "broken.s"))
+    assert "Invalid" in str(excinfo.value), "Exception message does not match expected"

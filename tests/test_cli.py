@@ -3,8 +3,8 @@
 import os
 import subprocess
 import sys
-import pytest
 
+import pytest
 
 pytestmark = pytest.mark.integration
 
